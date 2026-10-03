@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>j-c-meow 尾巴预览</title>
+<style>
+  html, body { margin: 0; height: 100%; background: linear-gradient(160deg,#1d2333,#2b2138);
+               overflow: hidden; touch-action: manipulation; }
+  #stage { position: absolute; inset: 0; }
+  #tip { position: fixed; left: 10px; top: calc(10px + env(safe-area-inset-top)); color: #8f9ac0;
+         font: 12px/1.4 system-ui, sans-serif; z-index: 5; }
+  #bar { position: fixed; left: 0; right: 0; bottom: calc(12px + env(safe-area-inset-bottom));
+         display: flex; gap: 10px; justify-content: center; z-index: 5; }
+  #bar button { border: 0; border-radius: 22px; padding: 12px 20px; font: 15px/1 system-ui, sans-serif;
+                color: #e8ecff; background: rgba(70,80,130,.55); backdrop-filter: blur(6px); }
+  #bar button.on { background: rgba(120,140,255,.75); }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="tip">loading…</div>
+<div id="bar">
+  <button id="bHalf" class="on">半身</button>
+  <button id="bFull">全身</button>
+  <button id="bWhip">甩尾演示</button>
+</div>
+<script src="pixi.min.js"></script>
+<script src="live2dcubismcore.min.js"></script>
+<script src="pixi-live2d-display-cubism4.min.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const modelPath = q.get("model") || "jcmow_tail/jcmow_front_tail.model3.json";
+
+const app = new PIXI.Application({
+  resizeTo: window, backgroundAlpha: 0, antialias: true, autoDensity: true,
+  resolution: Math.min(window.devicePixelRatio || 1, 2),
+});
+document.getElementById("stage").appendChild(app.view);
+PIXI.live2d.config.sound = false;
+
+let mode = "half";   // half | full
+let whip = false;
+
+function place(model) {
+  const im = model.internalModel;
+  const w = app.renderer.screen.width, h = app.renderer.screen.height;
+  const base = Math.min(w / im.originalWidth, h / im.originalHeight);
+  if (mode === "half") {
+    // 模拟直播半身取景：头肩为主，尾巴在身侧可见
+    model.scale.set(base * (h > w ? 2.1 : 1.7));
+    model.anchor.set(0.5, 0.34);
+    model.x = w / 2;
+    model.y = h * 0.62;
+  } else {
+    model.scale.set(base * (h > w ? 1.28 : 1.15));
+    model.anchor.set(0.5, 0.06);
+    model.x = w / 2;
+    model.y = h * 0.04;
+  }
+}
+
+PIXI.live2d.Live2DModel.from(modelPath, { autoInteract: false }).then((model) => {
+  const im = model.internalModel;
+  const core = im.coreModel;
+  window.__model = model;
+  app.stage.addChild(model);
+  place(model);
+  window.addEventListener("resize", () => place(model));
+
+  const setP = (id, v) => { const i = core._parameterIds.indexOf(id); if (i >= 0) core.setParameterValueByIndex(i, v); };
+
+  // 甩尾演示：快速左右转头，物理链带动尾梢滞后甩动
+  let wt = 0, last = performance.now();
+  app.ticker.add(() => {
+    const now = performance.now();
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    if (whip) {
+      wt += dt;
+      setP("ParamAngleX", 27 * Math.sin(wt * 2 * Math.PI / 1.4));
+      setP("ParamBodyAngleX", 8 * Math.sin(wt * 2 * Math.PI / 1.4));
+    } else {
+      wt = 0;
+      setP("ParamAngleX", 0);
+      setP("ParamBodyAngleX", 0);
+    }
+  });
+
+  const bHalf = document.getElementById("bHalf");
+  const bFull = document.getElementById("bFull");
+  const bWhip = document.getElementById("bWhip");
+  bHalf.onclick = () => { mode = "half"; bHalf.classList.add("on"); bFull.classList.remove("on"); place(model); };
+  bFull.onclick = () => { mode = "full"; bFull.classList.add("on"); bHalf.classList.remove("on"); place(model); };
+  bWhip.onclick = () => { whip = !whip; bWhip.classList.toggle("on", whip); };
+
+  document.getElementById("tip").textContent = "ready";
+  window.__ready = true;
+}).catch((e) => {
+  document.getElementById("tip").textContent = "加载失败: " + (e && e.message ? e.message : e);
+});
+</script>
+</body>
+</html>
