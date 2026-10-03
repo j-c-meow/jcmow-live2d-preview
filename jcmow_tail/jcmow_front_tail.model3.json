@@ -1,0 +1,50 @@
+{
+ "Version": 3,
+ "FileReferences": {
+  "Moc": "jcmow_front_tail.moc3",
+  "Textures": [
+   "jcmow_front_tail.4096/texture_00.png?v=2"
+  ],
+  "Physics": "jcmow_front_tail.physics3.json",
+  "DisplayInfo": "jcmow_front_tail.cdi3.json",
+  "Motions": {
+   "Idle": [
+    {
+     "File": "jcmow_front_tail.idle.motion3.json"
+    }
+   ],
+   "Blink": [
+    {
+     "File": "jcmow_front_tail.blink.motion3.json"
+    }
+   ],
+   "Nod": [
+    {
+     "File": "jcmow_front_tail.nod.motion3.json"
+    }
+   ],
+   "Shake": [
+    {
+     "File": "jcmow_front_tail.shake.motion3.json"
+    }
+   ]
+  }
+ },
+ "Groups": [
+  {
+   "Target": "Parameter",
+   "Name": "EyeBlink",
+   "Ids": [
+    "ParamEyeLOpen",
+    "ParamEyeROpen"
+   ]
+  },
+  {
+   "Target": "Parameter",
+   "Name": "LipSync",
+   "Ids": [
+    "ParamMouthOpenY"
+   ]
+  }
+ ]
+}
