@@ -1,7 +1,7 @@
 {
  "Version": 3,
  "FileReferences": {
-  "Moc": "jcmow_front_tail.moc3",
+  "Moc": "jcmow_front_tail.moc3?v=3",
   "Textures": [
    "jcmow_front_tail.4096/texture_00.png?v=3"
   ],
@@ -10,22 +10,22 @@
   "Motions": {
    "Idle": [
     {
-     "File": "jcmow_front_tail.idle.motion3.json"
+     "File": "jcmow_front_tail.idle.motion3.json?v=3"
     }
    ],
    "Blink": [
     {
-     "File": "jcmow_front_tail.blink.motion3.json"
+     "File": "jcmow_front_tail.blink.motion3.json?v=3"
     }
    ],
    "Nod": [
     {
-     "File": "jcmow_front_tail.nod.motion3.json"
+     "File": "jcmow_front_tail.nod.motion3.json?v=3"
     }
    ],
    "Shake": [
     {
-     "File": "jcmow_front_tail.shake.motion3.json"
+     "File": "jcmow_front_tail.shake.motion3.json?v=3"
     }
    ]
   }

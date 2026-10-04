@@ -70,7 +70,7 @@ PIXI.live2d.Live2DModel.from(modelPath, { autoInteract: false }).then((model) =>
 
   const setP = (id, v) => { const i = core._parameterIds.indexOf(id); if (i >= 0) core.setParameterValueByIndex(i, v); };
 
-  // 甩尾演示：快速左右转头，物理链带动尾梢滞后甩动
+  // 甩尾演示：直接驱动尾巴参数（身体不动，只有尾巴甩）
   let wt = 0, last = performance.now();
   app.ticker.add(() => {
     const now = performance.now();
@@ -78,12 +78,10 @@ PIXI.live2d.Live2DModel.from(modelPath, { autoInteract: false }).then((model) =>
     last = now;
     if (whip) {
       wt += dt;
-      setP("ParamAngleX", 27 * Math.sin(wt * 2 * Math.PI / 1.4));
-      setP("ParamBodyAngleX", 8 * Math.sin(wt * 2 * Math.PI / 1.4));
+      setP("ParamTailLeftRight", 0.95 * Math.sin(wt * 2 * Math.PI / 1.6));
     } else {
       wt = 0;
-      setP("ParamAngleX", 0);
-      setP("ParamBodyAngleX", 0);
+      setP("ParamTailLeftRight", 0);
     }
   });
 
