@@ -3,7 +3,7 @@
  "FileReferences": {
   "Moc": "jcmow_front_tail.moc3",
   "Textures": [
-   "jcmow_front_tail.4096/texture_00.png?v=2"
+   "jcmow_front_tail.4096/texture_00.png?v=3"
   ],
   "Physics": "jcmow_front_tail.physics3.json",
   "DisplayInfo": "jcmow_front_tail.cdi3.json",
